@@ -4,7 +4,7 @@
 
 Assignment 2 | River forecasting proposal and Moving MNIST experiments | Prepared for Zain | 29 October 2026 (Asia/Karachi).
 
-Code repository: https://github.com/ZainGulbaz/DLST-PA2. The repository contains the experiment source, final model weights, results, figures and local prediction-commit history. LMS submission has not been performed.
+Code repository: https://github.com/ZainGulbaz/DLST-PA2. The project includes the experiment source, final model weights, results, figures and prediction-commit history. LMS submission has not been performed.
 
 All required models A–D were trained for 30 epochs with seeds 0 and 1. The final model is symmetrised D, with no additional training. Every model metric below uses the 1,000 held-out videos, except Table 1 synthetic checks, Figure 1 training-only optical flow, parameter counts and timings. Tables use mean (seed 0, seed 1); deterministic references use a single value. Errors are rounded to three significant figures, with scientific notation below 1e-3. Underlying unrounded results are included in artifacts/.
 

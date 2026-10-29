@@ -254,7 +254,7 @@ def build():
     ids=make_figures(test); flow=json.loads((ART/'flow_summary.json').read_text()); hw=json.loads((ART/'hardware.json').read_text())
     d=Document(); d.h('Motion or Memory?'); d.h('AI651 — Deep Learning for Space, Time and Graphs',2)
     d.p('Assignment 2 | River forecasting proposal and Moving MNIST experiments | Prepared for Zain | 29 October 2026 (Asia/Karachi).')
-    d.p('Code repository: https://github.com/ZainGulbaz/DLST-PA2. The repository contains the experiment source, final model weights, results, figures and local prediction-commit history. LMS submission has not been performed.')
+    d.p('Code repository: https://github.com/ZainGulbaz/DLST-PA2. The project includes the experiment source, final model weights, results, figures and prediction-commit history. LMS submission has not been performed.')
     d.p('All required models A–D were trained for 30 epochs with seeds 0 and 1. The final model is symmetrised D, with no additional training. Every model metric below uses the 1,000 held-out videos, except Table 1 synthetic checks, Figure 1 training-only optical flow, parameter counts and timings. Tables use mean (seed 0, seed 1); deterministic references use a single value. Errors are rounded to three significant figures, with scientific notation below 1e-3. Underlying unrounded results are included in artifacts/.')
     d.p('The report includes six numbered experimental tables, six numbered experimental figures (some multi-panel), all Q2.1–Q2.17 answers, a causal forecasting proposal, GIFs and a record of the AI assistance. Pre-experiment predictions were committed before the corresponding experiments; their exact text and commit history are retained.')
     d.page(); q1(d); d.page()
