@@ -1,0 +1,9 @@
+{
+  "torch": "2.7.1+cu126",
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "cuda": "12.6",
+  "visible_devices": "2",
+  "threads": 4,
+  "precision": "float32; TF32 disabled",
+  "cudnn_benchmark": true
+}

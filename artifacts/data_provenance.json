@@ -1,0 +1,23 @@
+{
+  "md5": "be083ec986bfe91a449d63653c411eb2",
+  "source": "https://www.cs.toronto.edu/~nitish/unsupervised_video/mnist_test_seq.npy",
+  "shape": [
+    10000,
+    20,
+    1,
+    64,
+    64
+  ],
+  "train": [
+    0,
+    7999
+  ],
+  "validation": [
+    8000,
+    8999
+  ],
+  "test": [
+    9000,
+    9999
+  ]
+}
