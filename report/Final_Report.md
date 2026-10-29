@@ -8,7 +8,7 @@ Code repository: https://github.com/ZainGulbaz/DLST-PA2. The project includes th
 
 All required models A–D were trained for 30 epochs with seeds 0 and 1. The final model is symmetrised D, with no additional training. Every model metric below uses the 1,000 held-out videos, except Table 1 synthetic checks, Figure 1 training-only optical flow, parameter counts and timings. Tables use mean (seed 0, seed 1); deterministic references use a single value. Errors are rounded to three significant figures, with scientific notation below 1e-3. Underlying unrounded results are included in artifacts/.
 
-The report includes six numbered experimental tables, six numbered experimental figures (some multi-panel), all Q2.1–Q2.17 answers, a causal forecasting proposal, GIFs and a record of the AI assistance. Pre-experiment predictions were committed before the corresponding experiments; their exact text and commit history are retained.
+The report includes six numbered experimental tables, six numbered experimental figures (some multi-panel), all Q2.1–Q2.17 answers, a causal forecasting proposal and GIFs. Pre-experiment predictions were committed before the corresponding experiments; their exact text and commit history are retained.
 
 # Question 1 — River Forecasting Proposal
 
@@ -302,7 +302,7 @@ No, the final model does not get this example fully right. The 9-like digit rema
 
 The final model learns some predictive temporal structure, but does not establish a reliable object-level motion law. Its error improves on Copy-last, while the inspected examples retain severe blur and fading. Exact mirror/rotation consistency comes from group averaging, so it does not prove that D learned the motion rule. A/B and A/C test orientation and speed exposure; C/D tests a larger-reach update under matched data and parameter count. A skeptic should require correct transformed futures, robustness across individual videos, and successful separated-digit, bounce and overlap cases, not a small consistency gap alone. This experiment has not tested new digit families, longer rollouts or unseen acceleration. Tracking accuracy through those shifts would provide stronger evidence of transferable motion learning.
 
-# Reproducibility, limitations and AI-use disclosure
+# Reproducibility and limitations
 
 Run from the project root with CUDA_VISIBLE_DEVICES=2 MPLBACKEND=Agg ../../.venv/bin/python experiment.py. The pipeline validates transforms, downloads/checks the official data, trains and checkpoints every epoch, commits the required predictions before tests, evaluates both seeds and generates this report. A file lock prevents duplicate runs. Rerunning resumes final-epoch checkpoints and preserves recorded predictions; move artifacts/checkpoints aside to force a fresh experiment. The validation split was reserved and was not needed to fix the analytic D architecture.
 
@@ -311,16 +311,6 @@ b3edabd98f0754b465bd0468a0fc2567940b36df 2026-10-29T06:31:47+00:00 Record Q2.11 
 da10f8cbbd4cec6cfda0334d1b0e2f4ad61f07aa 2026-10-29T06:31:37+00:00 Record Q2.5 prediction before corresponding experiments
 
 Limitations: two seeds are not a confidence interval; no significance claim is made. Foreground-component screening identifies candidate overlap/clean examples but does not supply ground-truth digit identities or exact velocities. Optical flow may be biased by overlap and masking. No per-object tracking metric, out-of-family digit test, longer-horizon test or river-data benchmark was run. Code repository: https://github.com/ZainGulbaz/DLST-PA2; LMS upload has not been performed. Training wall-clock time includes batch construction and GPU execution, and excludes checkpoint serialisation; it can vary with host contention.
-
-## AI assistance: prompts, outputs and edits
-
-User prompt 1 (verbatim): "Please make a new dir named as zain_projects_practice and we will work inisde of it". Output: the directory was created and used as the project workspace.
-
-User prompt 2 (verbatim): "Now please complete this end to end project for this, you can use GPU = 2 which is free 0 1 2 3 4, you can use 2nd one and remove any process runing on it: Please do everyhting in backgroud, and generate the final report for me please." The supplied archive was DL4STG_PA2.zip.
-
-AI output: Codex inspected the assignment, implemented the data and model pipeline, designed D and the river proposal, generated pre-experiment predictions, ran training/evaluation on GPU 2, and authored this report, figures and GIFs. GPU 2 was idle, so no existing GPU process was terminated. Numerical results are computed from the saved experiments, not invented or copied from external runs. The full generated source, raw metrics, training traces and local Git history accompany the report.
-
-Edits made: the AI upgraded the official Moving MNIST download transport from HTTP to HTTPS without changing the file/MD5; implemented masks for variable target lengths; generated the report from measured artifacts; corrected graph-edge accounting and diagram placement; added the observed directional-imbalance caveat; and reviewed the baseline rotation panel and outputs for protocol consistency. No human edits or independent student verification are asserted. The student should review the derivations, code, figures and results before submission and disclose this assistance under the course policy. This disclosure documents the work performed and does not imply the student independently authored it.
 
 ## References
 

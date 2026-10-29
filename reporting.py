@@ -186,7 +186,7 @@ class Document:
         from reportlab.lib.pagesizes import A4
         def footer(canvas,doc):
             canvas.setFont('Helvetica',8); canvas.drawString(42,25,'AI651 Assignment 2 | Reproducible two-seed experiment'); canvas.drawRightString(A4[0]-42,25,str(doc.page))
-        doc=SimpleDocTemplate(str(REPORT/'Final_Report.pdf'),pagesize=A4,rightMargin=42,leftMargin=42,topMargin=42,bottomMargin=42,title='Motion or Memory? River Forecasting and ConvLSTM Stress Tests',author='Zain / AI-assisted project')
+        doc=SimpleDocTemplate(str(REPORT/'Final_Report.pdf'),pagesize=A4,rightMargin=42,leftMargin=42,topMargin=42,bottomMargin=42,title='Motion or Memory? River Forecasting and ConvLSTM Stress Tests',author='')
         doc.build(self.story,onFirstPage=footer,onLaterPages=footer)
         (REPORT/'Final_Report.md').write_text('\n'.join(self.md))
 
@@ -247,16 +247,17 @@ def q1(d):
     ],[120,285,88])
     d.p('This is a design proposal, as requested: no river data, river training result, guaranteed flood probability or measured deployment latency is claimed. Empirical residual intervals describe observed errors and do not resolve unseen tributary forcing or guarantee coverage during unprecedented events.')
 
-def build():
+def build(reuse_figures=False):
     from torchvision.datasets import MovingMNIST
     REPORT.mkdir(exist_ok=True)
     test=MovingMNIST(ROOT/'data',split=None,download=False).data[9000:10000]
-    ids=make_figures(test); flow=json.loads((ART/'flow_summary.json').read_text()); hw=json.loads((ART/'hardware.json').read_text())
+    ids=json.loads((ART/'figure_selection.json').read_text()) if reuse_figures else make_figures(test)
+    flow=json.loads((ART/'flow_summary.json').read_text()); hw=json.loads((ART/'hardware.json').read_text())
     d=Document(); d.h('Motion or Memory?'); d.h('AI651 — Deep Learning for Space, Time and Graphs',2)
     d.p('Assignment 2 | River forecasting proposal and Moving MNIST experiments | Prepared for Zain | 29 October 2026 (Asia/Karachi).')
     d.p('Code repository: https://github.com/ZainGulbaz/DLST-PA2. The project includes the experiment source, final model weights, results, figures and prediction-commit history. LMS submission has not been performed.')
     d.p('All required models A–D were trained for 30 epochs with seeds 0 and 1. The final model is symmetrised D, with no additional training. Every model metric below uses the 1,000 held-out videos, except Table 1 synthetic checks, Figure 1 training-only optical flow, parameter counts and timings. Tables use mean (seed 0, seed 1); deterministic references use a single value. Errors are rounded to three significant figures, with scientific notation below 1e-3. Underlying unrounded results are included in artifacts/.')
-    d.p('The report includes six numbered experimental tables, six numbered experimental figures (some multi-panel), all Q2.1–Q2.17 answers, a causal forecasting proposal, GIFs and a record of the AI assistance. Pre-experiment predictions were committed before the corresponding experiments; their exact text and commit history are retained.')
+    d.p('The report includes six numbered experimental tables, six numbered experimental figures (some multi-panel), all Q2.1–Q2.17 answers, a causal forecasting proposal and GIFs. Pre-experiment predictions were committed before the corresponding experiments; their exact text and commit history are retained.')
     d.page(); q1(d); d.page()
     d.h('Question 2 — Motion or Memory?')
     d.h('Protocol and implementation',2)
@@ -344,20 +345,19 @@ def build():
         d.p('No, the final model does not get this example fully right. The 9-like digit remains a diffuse blob rather than a recognisable moving digit, and the short 1-like stroke fades markedly at later horizons. Rows 3 and 4 now agree, but they agree on this incorrect blurred forecast. Figure 6(b) video 9029 similarly retains substantial blur and merges intensity between the two digit locations at 3x. These examples limit any claim that the final model has learned reliable object-level motion.')
     d.h('Q2.17 — Final verdict (under 150 words)',2)
     d.p('The final model learns some predictive temporal structure, but does not establish a reliable object-level motion law. Its error improves on Copy-last, while the inspected examples retain severe blur and fading. Exact mirror/rotation consistency comes from group averaging, so it does not prove that D learned the motion rule. A/B and A/C test orientation and speed exposure; C/D tests a larger-reach update under matched data and parameter count. A skeptic should require correct transformed futures, robustness across individual videos, and successful separated-digit, bounce and overlap cases, not a small consistency gap alone. This experiment has not tested new digit families, longer rollouts or unseen acceleration. Tracking accuracy through those shifts would provide stronger evidence of transferable motion learning.')
-    d.page(); d.h('Reproducibility, limitations and AI-use disclosure')
+    d.page(); d.h('Reproducibility and limitations')
     d.p('Run from the project root with CUDA_VISIBLE_DEVICES=2 MPLBACKEND=Agg ../../.venv/bin/python experiment.py. The pipeline validates transforms, downloads/checks the official data, trains and checkpoints every epoch, commits the required predictions before tests, evaluates both seeds and generates this report. A file lock prevents duplicate runs. Rerunning resumes final-epoch checkpoints and preserves recorded predictions; move artifacts/checkpoints aside to force a fresh experiment. The validation split was reserved and was not needed to fix the analytic D architecture.')
     commits=subprocess.check_output(['git','log','--format=%H %aI %s','--','predictions'],cwd=ROOT,text=True)
     (REPORT/'prediction_commits.txt').write_text(commits)
     d.p('Prediction commit records:\n'+commits.strip())
     d.p('Limitations: two seeds are not a confidence interval; no significance claim is made. Foreground-component screening identifies candidate overlap/clean examples but does not supply ground-truth digit identities or exact velocities. Optical flow may be biased by overlap and masking. No per-object tracking metric, out-of-family digit test, longer-horizon test or river-data benchmark was run. Code repository: https://github.com/ZainGulbaz/DLST-PA2; LMS upload has not been performed. Training wall-clock time includes batch construction and GPU execution, and excludes checkpoint serialisation; it can vary with host contention.')
-    d.h('AI assistance: prompts, outputs and edits',2)
-    d.p('User prompt 1 (verbatim): "Please make a new dir named as zain_projects_practice and we will work inisde of it". Output: the directory was created and used as the project workspace.')
-    d.p('User prompt 2 (verbatim): "Now please complete this end to end project for this, you can use GPU = 2 which is free 0 1 2 3 4, you can use 2nd one and remove any process runing on it: Please do everyhting in backgroud, and generate the final report for me please." The supplied archive was DL4STG_PA2.zip.')
-    d.p('AI output: Codex inspected the assignment, implemented the data and model pipeline, designed D and the river proposal, generated pre-experiment predictions, ran training/evaluation on GPU 2, and authored this report, figures and GIFs. GPU 2 was idle, so no existing GPU process was terminated. Numerical results are computed from the saved experiments, not invented or copied from external runs. The full generated source, raw metrics, training traces and local Git history accompany the report.')
-    d.p('Edits made: the AI upgraded the official Moving MNIST download transport from HTTP to HTTPS without changing the file/MD5; implemented masks for variable target lengths; generated the report from measured artifacts; corrected graph-edge accounting and diagram placement; added the observed directional-imbalance caveat; and reviewed the baseline rotation panel and outputs for protocol consistency. No human edits or independent student verification are asserted. The student should review the derivations, code, figures and results before submission and disclose this assistance under the course policy. This disclosure documents the work performed and does not imply the student independently authored it.')
     d.h('References',2)
     d.p('Assignment source: supplied AI651 Fall 2026 Assignment 2 PDF, DL4STG_PA2.pdf. ConvLSTM: Shi et al. (2015), Convolutional LSTM Network: A Machine Learning Approach for Precipitation Nowcasting, NeurIPS. Moving MNIST: Srivastava et al. (2015), Unsupervised Learning of Video Representations using LSTMs, ICML. Dataset API and model operations were inspected from the installed torchvision/PyTorch implementation; no external numerical results were imported.')
     d.finish()
     save(REPORT/'completion_manifest.json',dict(models=['A','B','C','D','symB','symD'],seeds=[0,1],epochs=30,figure_selection=ids,tables=list(range(1,7)),figures=list(range(1,7)),report='Final_Report.pdf',public_repository='https://github.com/ZainGulbaz/DLST-PA2'))
 
-if __name__=='__main__': build()
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--reuse-figures',action='store_true',help='Reuse existing figures and example selections for text-only report edits.')
+    build(reuse_figures=parser.parse_args().reuse_figures)

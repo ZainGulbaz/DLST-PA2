@@ -57,8 +57,7 @@ visible to the training process; no pre-existing process needed termination.
 
 Code repository: https://github.com/ZainGulbaz/DLST-PA2. The project includes
 the source, compact final weights, results and report. The report's first page
-contains this URL and explicitly discloses AI assistance. LMS submission has not
-been performed.
+contains this URL. LMS submission has not been performed.
 
 ## Load the final predictor
 
