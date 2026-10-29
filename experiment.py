@@ -73,7 +73,9 @@ def checks():
     torch.manual_seed(0); x=torch.rand(20,1,64,64)
     p=torch.zeros_like(x); p[7,0,10,20]=1
     rows=[]
-    for name,a,b in [('a',transform(transform(x,4),4),x),('b',transform(x,0),torch.rot90(x,4,(-2,-1))),('c',transform(transform(transform(x,4),1),4),transform(x,3))]:
+    r4=x
+    for _ in range(4): r4=transform(r4,1)
+    for name,a,b in [('a',transform(transform(x,4),4),x),('b',r4,x),('c',transform(transform(transform(x,4),1),4),transform(x,3))]:
         gap=float((a-b).abs().max()); eq=torch.equal(a,b)
         assert gap==0 and eq
         rows.append(dict(check=name,max_abs=gap,equal=eq))
@@ -258,7 +260,7 @@ def main():
     status('rendering_report')
     from reporting import build
     build()
-    subprocess.run(['git','add','experiment.py','reporting.py','README.md','requirements-lock.txt','report','artifacts','predictions','.gitignore'],cwd=ROOT,check=True)
+    subprocess.run(['git','add','experiment.py','reporting.py','README.md','requirements.txt','requirements-lock.txt','report','artifacts','predictions','.gitignore','verify.py'],cwd=ROOT,check=True)
     subprocess.run(['git','commit','-m','Complete two-seed experiments, analysis, figures and final report'],cwd=ROOT,check=True)
     status('complete',report=str(ROOT/'report/Final_Report.pdf'))
 
