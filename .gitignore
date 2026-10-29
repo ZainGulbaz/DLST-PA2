@@ -6,3 +6,9 @@ __pycache__/
 *.pid
 artifacts/predictions/
 .run.lock
+model_weights/
+*.zip
+*.zip.sha256
+DL4STG_PA2.pdf
+assignment.txt
+report/figures/preview_*.png

@@ -30,6 +30,7 @@ def main():
         paths.extend(p for p in folder.rglob('*') if p.is_file() and not p.name.startswith('preview_'))
     paths.extend(ART.glob('*.json'))
     paths.append(ART/'flow.npz')
+    paths.extend(p for p in (ROOT/'Question1').rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix in ['.py','.pt','.json','.ipynb','.txt'])
     # Include local Git prediction evidence as plain text, not private Git metadata.
     destination=ROOT/'DL4STG_PA2_Completed.zip'
     with zipfile.ZipFile(destination,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:

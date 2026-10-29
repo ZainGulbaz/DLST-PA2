@@ -54,3 +54,24 @@ visible to the training process; no pre-existing process needed termination.
 The code repository is local. No public GitHub repository or LMS submission has
 been created; a public repository URL must be added to page one before submission
 if required by the course. The report explicitly discloses AI assistance.
+
+## Load the final predictor
+
+After `package_results.py` exports the compact model weights:
+
+```python
+import torch
+from experiment import Forecaster, symmetrised
+
+saved = torch.load("model_weights/D_seed0.pt", map_location="cpu", weights_only=True)
+model = Forecaster(larger=True)
+model.load_state_dict(saved["state_dict"])
+model = model.cuda().eval()
+# x: float32 [batch, 5, 1, 64, 64], intensities in [0,1], on the GPU.
+with torch.no_grad():
+    prediction = symmetrised(model, x)  # [batch, 5, 1, 64, 64]
+```
+
+Use `CUDA_VISIBLE_DEVICES=2` before launching Python on the prepared host. The
+model sees the selected physical GPU as logical CUDA device 0. The five outputs
+are always generated, even when the dataset has fewer target frames to score.
