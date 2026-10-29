@@ -53,6 +53,7 @@ fastapi-cloud-cli==0.1.5
 fastjsonschema==2.22.2
 fastrlock==0.8.3
 filelock==3.18.0
+flatbuffers==25.12.19
 fonttools==4.68.0
 frozenlist==1.7.0
 fsspec==2026.9.0
@@ -125,6 +126,7 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 oauthlib==3.2.2
+onnxruntime==1.31.1
 openai==1.90.0
 opencv-python-headless==4.12.0.88
 outlines_core==0.2.10
@@ -155,6 +157,9 @@ Pygments==2.19.2
 PyGObject==3.48.2
 PyHamcrest==2.1.0
 PyJWT==2.7.0
+pymupdf==2.0
+pymupdf4llm==2.0
+pymupdf_layout==2.0
 PyMySQL==1.2.3
 pyOpenSSL==23.2.0
 pyparsing==3.1.1
@@ -199,6 +204,7 @@ stack-data==0.6.3
 starlette==0.47.2
 sympy==1.14.0
 systemd-python==235
+tabulate==0.10.0
 tiktoken==0.11.0
 tokenizers==0.22.2
 torch==2.7.1

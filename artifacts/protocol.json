@@ -1,0 +1,68 @@
+{
+  "batch_size": 32,
+  "epochs": 30,
+  "seeds": [
+    0,
+    1
+  ],
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "schedule": null,
+  "checkpoint": "final epoch",
+  "hidden_channels": [
+    64,
+    64
+  ],
+  "patch_size": 4,
+  "rollout_steps": 9,
+  "input_steps": 5,
+  "forecast_steps": 5,
+  "teacher_forcing": false,
+  "target_mask": "per-video normalisation over valid target frames",
+  "training_videos": 8000,
+  "test_videos": 1000,
+  "test_start": 1,
+  "speed_training": {
+    "A": [
+      1
+    ],
+    "B": [
+      1
+    ],
+    "C": [
+      1,
+      2,
+      3
+    ],
+    "D": [
+      1,
+      2,
+      3
+    ]
+  },
+  "augmentation": {
+    "A": false,
+    "B": "uniform D4",
+    "C": false,
+    "D": false
+  },
+  "dilation": {
+    "A": [
+      1,
+      1
+    ],
+    "B": [
+      1,
+      1
+    ],
+    "C": [
+      1,
+      1
+    ],
+    "D": [
+      1,
+      2
+    ]
+  },
+  "selection": "D fixed analytically; no test or validation candidate selection"
+}

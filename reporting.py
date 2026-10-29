@@ -62,6 +62,16 @@ def component_count(frame):
     n,labels,stats,cents=cv2.connectedComponentsWithStats(a,8)
     return int((stats[1:,cv2.CC_STAT_AREA]>20).sum())
 
+def separated_digits(frame):
+    """Conservative example screen: two components with separated bounding boxes."""
+    import cv2
+    a=(np.asarray(frame).squeeze()>.05).astype(np.uint8)
+    _,_,stats,_=cv2.connectedComponentsWithStats(a,8)
+    boxes=[s for s in stats[1:] if s[cv2.CC_STAT_AREA]>12]
+    if len(boxes)!=2: return False
+    x1,y1,w1,h1,_=boxes[0]; x2,y2,w2,h2,_=boxes[1]
+    return max(x2-(x1+w1),x1-(x2+w2),y2-(y1+h1),y1-(y2+h2))>=3
+
 def make_figures(test):
     FIG.mkdir(parents=True,exist_ok=True); GIF.mkdir(exist_ok=True)
     flow=np.load(ART/'flow.npz'); dirs=flow['direction']; speeds=flow['speed']
@@ -98,7 +108,7 @@ def make_figures(test):
         ax[j].set(xlabel=f'per-video C_{g}',ylabel='number of test videos',title=g); ax[j].legend(fontsize=7)
     fig.tight_layout(); fig.savefig(FIG/'Figure4.png'); plt.close(fig)
     display_indices=sorted(set([j for k in [1,2,3] for j in list(range(0,5*k,k))+[5*k,6*k]]))
-    clean=next(i for i in range(1000) if all(component_count(v[i,j])==2 for j in display_indices))
+    clean=next(i for i in range(1000) if all(separated_digits(v[i,j]) for j in display_indices))
     for predobj,num in [(a,'5'),(final,'6b')]:
         rows=[]; labels=[]
         for k in [1,2,3]:
@@ -169,7 +179,7 @@ class Document:
         from reportlab.platypus import Image,KeepTogether,Paragraph,Spacer
         path=FIG/name
         im=PILImage.open(path); w,h=im.size; scale=min(493/w,560/h)
-        self.story.extend([Image(str(path),width=w*scale,height=h*scale),Paragraph(html.escape(caption),self.styles['BodyText']),Spacer(1,9)])
+        self.story.append(KeepTogether([Image(str(path),width=w*scale,height=h*scale),Paragraph(html.escape(caption),self.styles['BodyText']),Spacer(1,9)]))
         self.md.append(f'![{caption}](figures/{name})\n')
     def finish(self):
         from reportlab.platypus import SimpleDocTemplate
@@ -277,6 +287,8 @@ def build():
     d.p('One folded-grid cell is 4 original pixels centre-to-centre. Each 3x3 gate convolution extends spatial radius by one cell. The input u_tau can reach the output through the layer-1 gate convolution and then the layer-2 gate convolution: radius 2 cells, or 8 original pixels per coordinate (Chebyshev radius). The same longest path exists from h1_(tau-1) through both convolutions; h2_(tau-1) traverses only the second, for radius 4 pixels. Cell-state updates are pointwise and do not add reach. The 1x1 head and shuffle operations add none. Recurrence accumulates reach over time, but those earlier steps are not counted inside this one update. At a diagonal the Euclidean centre distance can be 8*sqrt(2) pixels; the stated 8 is the axis/Chebyshev convention used to compare displacements.')
     d.h('Q2.4 — Baseline accuracy and overlap',2)
     d.p(f"Table 2 gives A E(5)={pair('A','E5')}, versus Blank {fmt(load('Blank')['E5'])} and Copy-last {fmt(load('Copy-last')['E5'])}. A's MSE changes from {pair('A','mse_h',index=0)} at h=1 to {pair('A','mse_h',index=4)} at h=5. Figure 2 makes the horizon-dependent localisation and sharpness error visible. Pixel MSE rewards an averaged, blurry forecast when digit position or overlap identity is uncertain; successful low MSE does not establish that individual digits are tracked through occlusion.")
+    if ids['overlap_candidate']==9002:
+        d.p('In Figure 2 video 9002, the true 1-like stroke meets the top of the 5-like digit near the last displayed future frames. A blurs away the lower digit structure and spreads intensity between the two objects; by h=5 the two-digit scene is represented as a diffuse near-vertical cloud. This specific overlap example does not show successful recovery of two digit identities after occlusion.')
     d.h('Q2.5 — Prediction recorded before baseline transformation/speed tests',2)
     d.p((ROOT/'predictions/Q2_5.md').read_text().strip())
     d.p('The paragraph above is copied without editing from predictions/Q2_5.md; the experiment committed it before running the mirror/rotation/speed evaluation. See prediction_commits.txt for commit hashes and timestamps.')
@@ -295,9 +307,11 @@ def build():
     harder='rotation' if mean('A','ER')>mean('A','EM') else 'mirror'
     d.p(f"For A at 1x, transformed errors are EM={pair('A','EM')} and ER={pair('A','ER')}; {harder} is harder by the two-seed mean transformed error. The corresponding gaps CM={pair('A','CM')} and CR={pair('A','CR')} quantify consistency separately. Broad direction coverage in Figure 1 weakens a pure unfamiliar-direction explanation; altered digit orientation and the architecture's orientation-sensitive features are plausible drivers. This is evidence consistent with appearance sensitivity, not a causal proof that appearance alone explains the difference.")
     d.table('Table 4 — Baseline speed stress test',['Metric / speed','A: mean (s0,s1)','Copy-last'],[[key,pair('A',key),fmt(load('Copy-last')[key])] for key in ['E2_1','E2_2','E2_3','E5','E5_2']],[110,260,123])
-    d.fig('Figure5.png',f"Figure 5. Seed-0 A, video {ids['speed_video']}; inputs and h=1,2 prediction/truth at all three speeds. The same video is reused in Figure 6(b). All displayed true frames have two separated foreground components above intensity 0.2 (area >20 pixels); global frame numbers inspected: {ids['speed_true_frame_numbers']}.")
+    d.fig('Figure5.png',f"Figure 5. Seed-0 A, video {ids['speed_video']}; inputs and h=1,2 prediction/truth at all three speeds. The same video is reused in Figure 6(b). All displayed true frames have two foreground components above intensity 0.05 (area >12 pixels) whose bounding boxes are separated by at least three pixels; global frame numbers inspected: {ids['speed_true_frame_numbers']}.")
     d.h('Q2.9 — Speed failure and reach',2)
     d.p(f"A's E(2) is {pair('A','E2_1')} at 1x, {pair('A','E2_2')} at 2x, and {pair('A','E2_3')} at 3x (Table 4). Figure 5 shows how the same video changes under temporal subsampling. Larger displacement makes localisation and sharpness harder, but an 8-pixel structural reach is not a guaranteed speed threshold: velocities vary, diagonal versus axial distance matters, and previous recurrent updates can retain information. A visible blur suggests conditional averaging; stalling suggests copying/persistence; duplication suggests incompatible positional hypotheses; disappearance suggests loss of a digit representation. None alone proves a reach bottleneck. We therefore describe the measured deterioration rather than declaring failure at a universal speed.")
+    if ids['speed_video']==9029:
+        d.p('In Figure 5 video 9029, A loses the internal shape of the 8-like digit even at 1x. At 3x its two futures are two diffuse blobs clustered near the preceding scene, whereas the true 2-like digit moves far down and left and the 8-like digit is sharply separated above/right. The lower-left displacement is substantially under-predicted: this is a combination of stalling and blur, with no visible duplicate digit needed to explain this example. There is already a large measured deterioration at 2x, where typical displacement is below the nominal 8-pixel reach, showing that reach alone missed the training-distribution and representation problem.')
     d.h('Q2.10 — Separate unfamiliar speed from reach',2)
     d.p('A alone cannot distinguish the two. Train C on the uniform speed mixture using exactly A architecture and protocol, then compare to A by E(2) at each speed. Improvement implicates training distribution. Compare C with D on the same mixture and budget to test a larger-reach architecture. For stronger attribution, bin by independently measured nonoverlapping displacement relative to the respective reaches and use several matched-capacity receptive-field designs; dilation also changes spatial sampling and optimisation, so C versus D is not a perfect intervention on reach alone.')
     d.h('Q2.11 — Prediction recorded before B–D training',2)

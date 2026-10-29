@@ -37,10 +37,13 @@ including inherited packages unrelated to this assignment.
 - `checkpoints/`: final-epoch weights, Adam state and restart state.
 - `status.json` and `run.log`: machine-readable progress and execution log.
 - `Question1/`: original supplied companion notebook and bundled toy models.
+- `DL4STG_PA2_Completed.zip`: portable deliverable with source, final weights,
+  metrics, figures, GIFs and report (omits the 819 MB dataset and prediction caches).
 
 Check progress with `cat status.json`; verify a completed run using
 `../../.venv/bin/python verify.py`. Regenerate only the report with
 `../../.venv/bin/python reporting.py`.
+Run `../../.venv/bin/python package_results.py` to rebuild the deliverable archive.
 
 Every performance metric uses all 1,000 test videos (global indices 9000–9999).
 Figure 1 uses only training videos 0–49. Table 1 uses synthetic tensors. The test
