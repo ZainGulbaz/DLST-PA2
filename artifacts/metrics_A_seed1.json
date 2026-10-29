@@ -17,5 +17,6 @@
   "E5_2": 0.05232575535774231,
   "parameters": 480784,
   "training_seconds_per_epoch": 5.216615326733639,
-  "inference_seconds": 0.15933158434927464
+  "inference_seconds": 0.15933158434927464,
+  "model_sha256": "6b184854a44448ad7f3f4360cec94c4632ced7be08ca6c8cb23b9a589df7fe0d"
 }

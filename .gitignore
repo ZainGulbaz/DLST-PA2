@@ -9,6 +9,7 @@ artifacts/predictions/
 model_weights/
 *.zip
 *.zip.sha256
+*.bundle
 DL4STG_PA2.pdf
 assignment.txt
 report/figures/preview_*.png

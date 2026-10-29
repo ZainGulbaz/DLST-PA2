@@ -69,6 +69,12 @@ class Forecaster(nn.Module):
 def symmetrised(model, x):
     return torch.stack([inverse(model(transform(x,g)),g) for g in range(8)]).mean(0)
 
+def model_fingerprint(model):
+    h=hashlib.sha256()
+    for name,value in model.state_dict().items():
+        h.update(name.encode()); h.update(value.detach().cpu().contiguous().numpy().tobytes())
+    return h.hexdigest()
+
 def checks():
     torch.manual_seed(0); x=torch.rand(20,1,64,64)
     p=torch.zeros_like(x); p[7,0,10,20]=1
@@ -199,14 +205,18 @@ def summarise(preds,test):
 
 def evaluate(model,test,name,seed,train_time,wrapped=False):
     prefix=f'{name}_seed{seed}'; marker=ART/f'metrics_{prefix}.json'
-    if marker.exists(): return json.loads(marker.read_text())
+    fingerprint=model_fingerprint(model)
+    if marker.exists():
+        cached=json.loads(marker.read_text())
+        if cached.get('model_sha256')==fingerprint and (seed!=0 or (ART/f'predictions/{prefix}.pt').exists()):
+            return cached
     status('evaluation',model=name,seed=seed)
     preds={}; infer=0
     for key,k,g in [('1',1,0),('M',1,4),('R',1,1),('2',2,0),('3',3,0)]:
         preds[key],sec=predict(model,test,k,g,wrapped)
         if key=='1': infer=sec
     met,cm,cr=summarise(preds,test)
-    met.update(parameters=sum(p.numel() for p in model.parameters()),training_seconds_per_epoch=train_time,inference_seconds=infer)
+    met.update(parameters=sum(p.numel() for p in model.parameters()),training_seconds_per_epoch=train_time,inference_seconds=infer,model_sha256=fingerprint)
     out=ART/'predictions'; out.mkdir(exist_ok=True)
     if seed==0:
         torch.save(dict(preds=preds,CM=cm,CR=cr),out/f'{prefix}.pt')
@@ -260,9 +270,14 @@ def main():
     status('rendering_report')
     from reporting import build
     build()
-    subprocess.run(['git','add','experiment.py','reporting.py','README.md','requirements.txt','requirements-lock.txt','report','artifacts','predictions','.gitignore','verify.py'],cwd=ROOT,check=True)
-    subprocess.run(['git','commit','-m','Complete two-seed experiments, analysis, figures and final report'],cwd=ROOT,check=True)
+    from verify import main as verify_outputs
+    verify_outputs()
     status('complete',report=str(ROOT/'report/Final_Report.pdf'))
+    subprocess.run(['git','add','experiment.py','reporting.py','README.md','requirements.txt','requirements-lock.txt','report','artifacts','predictions','.gitignore','verify.py','package_results.py','status.json'],cwd=ROOT,check=True)
+    subprocess.run(['git','commit','-m','Complete two-seed experiments, analysis, figures and final report'],cwd=ROOT,check=False)
+    subprocess.run(['git','bundle','create',str(ROOT/'project_history.bundle'),'--all'],cwd=ROOT,check=True)
+    from package_results import main as package_outputs
+    package_outputs()
 
 if __name__=='__main__':
     try: main()

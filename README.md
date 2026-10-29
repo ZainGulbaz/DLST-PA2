@@ -23,6 +23,8 @@ For another host, create a Python 3.12 environment, install `requirements.txt`
 with an appropriate CUDA-enabled torch build, and run `python experiment.py`.
 The local `requirements-lock.txt` records the actual prepared environment,
 including inherited packages unrelated to this assignment.
+Cached metrics are reused only when the model weight fingerprint matches and
+the seed-0 prediction cache is still present; otherwise evaluation is repeated.
 
 ## Outputs
 
@@ -39,6 +41,8 @@ including inherited packages unrelated to this assignment.
 - `Question1/`: original supplied companion notebook and bundled toy models.
 - `DL4STG_PA2_Completed.zip`: portable deliverable with source, final weights,
   metrics, figures, GIFs and report (omits the 819 MB dataset and prediction caches).
+- `project_history.bundle`: portable Git history, including the pre-experiment
+  prediction commits. Restore with `git clone project_history.bundle restored`.
 
 Check progress with `cat status.json`; verify a completed run using
 `../../.venv/bin/python verify.py`. Regenerate only the report with

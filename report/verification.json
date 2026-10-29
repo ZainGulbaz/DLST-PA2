@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "checks": [
+    "exact transforms/windows",
+    "eight 30-epoch training histories",
+    "12 learned-model evaluations",
+    "metric arithmetic",
+    "symmetry numerical precision",
+    "report answer/table/figure coverage",
+    "eight five-frame GIFs",
+    "prediction commits"
+  ],
+  "prediction_caches_checked": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "symB",
+    "symD"
+  ],
+  "prediction_cache_note": "Full cache shapes cover all 1000 videos for each checked model; compact archives omit these large caches.",
+  "report_pages": 20
+}

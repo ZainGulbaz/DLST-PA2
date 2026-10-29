@@ -24,7 +24,7 @@ def main():
     with (report/'all_metrics.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=fields); writer.writeheader(); writer.writerows(rows)
     paths=[]
-    for name in ['experiment.py','reporting.py','verify.py','package_results.py','README.md','requirements.txt','requirements-lock.txt','status.json']:
+    for name in ['experiment.py','reporting.py','verify.py','package_results.py','README.md','requirements.txt','requirements-lock.txt','status.json','project_history.bundle']:
         paths.append(ROOT/name)
     for folder in [report,weights,ROOT/'predictions']:
         paths.extend(p for p in folder.rglob('*') if p.is_file() and not p.name.startswith('preview_'))
