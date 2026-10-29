@@ -55,9 +55,10 @@ split never chooses an architecture. Predictions Q2.5 and Q2.11 are recorded and
 committed automatically before their corresponding experiments. Only GPU 2 is
 visible to the training process; no pre-existing process needed termination.
 
-The code repository is local. No public GitHub repository or LMS submission has
-been created; a public repository URL must be added to page one before submission
-if required by the course. The report explicitly discloses AI assistance.
+Code repository: https://github.com/ZainGulbaz/DLST-PA2. The repository includes
+the source, compact final weights, results and report. The report's first page
+contains this URL and explicitly discloses AI assistance. LMS submission has not
+been performed.
 
 ## Load the final predictor
 

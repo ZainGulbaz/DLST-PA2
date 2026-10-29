@@ -6,7 +6,8 @@ __pycache__/
 *.pid
 artifacts/predictions/
 .run.lock
-model_weights/
+!Question1/checkpoints/
+!Question1/checkpoints/**
 *.zip
 *.zip.sha256
 *.bundle

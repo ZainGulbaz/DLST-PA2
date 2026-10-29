@@ -4,7 +4,7 @@
 
 Assignment 2 | River forecasting proposal and Moving MNIST experiments | Prepared for Zain | 29 October 2026 (Asia/Karachi).
 
-Code repository: local Git repository in zain_projects_practice/DL4STG_PA2. Public GitHub URL: not configured. This report does not claim that a public repository has been created or that an LMS submission has occurred. Publication of the code and inclusion of its URL on this page remain submission steps.
+Code repository: https://github.com/ZainGulbaz/DLST-PA2. The repository contains the experiment source, final model weights, results, figures and local prediction-commit history. LMS submission has not been performed.
 
 All required models A–D were trained for 30 epochs with seeds 0 and 1. The final model is symmetrised D, with no additional training. Every model metric below uses the 1,000 held-out videos, except Table 1 synthetic checks, Figure 1 training-only optical flow, parameter counts and timings. Tables use mean (seed 0, seed 1); deterministic references use a single value. Errors are rounded to three significant figures, with scientific notation below 1e-3. Underlying unrounded results are included in artifacts/.
 
@@ -310,7 +310,7 @@ Prediction commit records:
 b3edabd98f0754b465bd0468a0fc2567940b36df 2026-10-29T06:31:47+00:00 Record Q2.11 prediction before corresponding experiments
 da10f8cbbd4cec6cfda0334d1b0e2f4ad61f07aa 2026-10-29T06:31:37+00:00 Record Q2.5 prediction before corresponding experiments
 
-Limitations: two seeds are not a confidence interval; no significance claim is made. Foreground-component screening identifies candidate overlap/clean examples but does not supply ground-truth digit identities or exact velocities. Optical flow may be biased by overlap and masking. No per-object tracking metric, out-of-family digit test, longer-horizon test or river-data benchmark was run. The Git repository is local; public publication and LMS upload have not been performed. Training wall-clock time includes batch construction and GPU execution, and excludes checkpoint serialisation; it can vary with host contention.
+Limitations: two seeds are not a confidence interval; no significance claim is made. Foreground-component screening identifies candidate overlap/clean examples but does not supply ground-truth digit identities or exact velocities. Optical flow may be biased by overlap and masking. No per-object tracking metric, out-of-family digit test, longer-horizon test or river-data benchmark was run. Code repository: https://github.com/ZainGulbaz/DLST-PA2; LMS upload has not been performed. Training wall-clock time includes batch construction and GPU execution, and excludes checkpoint serialisation; it can vary with host contention.
 
 ## AI assistance: prompts, outputs and edits
 
